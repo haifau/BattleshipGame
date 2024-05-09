@@ -1,5 +1,5 @@
 import pygame
-
+import random
 from playerspaceship import PlayerSpaceShip
 
 # set up pygame modules
@@ -38,6 +38,10 @@ instruction2 = "Keys: use spacebar to launch bullets and the arrow keys to move.
 # variables:
 start = False
 
+INITIAL_BG_LVL1_Y = random.randint(0,500)
+bg_lvl1_y = INITIAL_BG_LVL1_Y
+
+
 # render the text for later
 display_title = title_font.render(title, True, (255, 255, 255))
 display_message1 = text_font.render(message1, True, (255, 255, 255))
@@ -51,8 +55,12 @@ clock = pygame.time.Clock()
 # -------- Main Program Loop -----------
 
 while run:
-    clock.tick(60)
     # --- Main event loop
+    clock.tick(60)
+    if start == True:
+        bg_lvl1_y -= 100
+        if bg_lvl1_y < -300:
+            bg_lvl1_y = random.randint(500, 1000)
 
     for event in pygame.event.get():  # User did something
         if event.type == pygame.MOUSEBUTTONUP:
@@ -62,16 +70,16 @@ while run:
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
-        # movement for player spaceship
-        keys_player = pygame.key.get_pressed()  # checking pressed keys
-        if keys_player[pygame.K_UP]:
-            ps.move_player_ship("up")
-        if keys_player[pygame.K_DOWN]:
-            ps.move_player_ship("down")
-        if keys_player[pygame.K_RIGHT]:
-            ps.move_player_ship("right")
-        if keys_player[pygame.K_LEFT]:
-            ps.move_player_ship("left")
+    # movement for player spaceship
+    keys_player = pygame.key.get_pressed()  # checking pressed keys
+    if keys_player[pygame.K_UP]:
+        ps.move_player_ship("up")
+    if keys_player[pygame.K_DOWN]:
+        ps.move_player_ship("down")
+    if keys_player[pygame.K_RIGHT]:
+        ps.move_player_ship("right")
+    if keys_player[pygame.K_LEFT]:
+        ps.move_player_ship("left")
 
     if not start:
         start_screen.blit(bg_start, (0, 0))
