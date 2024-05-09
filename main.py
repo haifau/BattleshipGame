@@ -1,6 +1,6 @@
 import pygame
 
-# import random
+from playerspaceship import PlayerSpaceShip
 
 # set up pygame modules
 pygame.init()
@@ -23,13 +23,15 @@ bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 start_button = pygame.image.load("button.png")
 start_button = pygame.transform.scale(start_button, (200, 100))
 
+ps = PlayerSpaceShip(300, 150)
+
 background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
 pygame.mixer.music.play(-1)
 
 # text on screen
 title = "SPACE ATTACK"
-message1 = "This is space control over. The universe needs your help."
-message2 = "Aliens are attacking the milkyway galaxy."
+message1 = "THIS IS SPACE CONTROL OVER. THE UNIVERSE NEEDS YOUR HELP."
+message2 = "ALIENS ARE ATTACKING THE MILKYWAY GALAXY."
 instruction1 = "Use your space battleship bullets to counter their attacks."
 instruction2 = "Keys: use spacebar to launch bullets and the arrow keys to move."
 
@@ -45,10 +47,11 @@ display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
+clock = pygame.time.Clock()
 # -------- Main Program Loop -----------
 
-
 while run:
+    clock.tick(60)
     # --- Main event loop
 
     for event in pygame.event.get():  # User did something
@@ -58,6 +61,17 @@ while run:
             start_screen = pygame.display.set_mode(size)
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
+
+        # movement for player spaceship
+        keys_player = pygame.key.get_pressed()  # checking pressed keys
+        if keys_player[pygame.K_UP]:
+            ps.move_player_ship("up")
+        if keys_player[pygame.K_DOWN]:
+            ps.move_player_ship("down")
+        if keys_player[pygame.K_RIGHT]:
+            ps.move_player_ship("right")
+        if keys_player[pygame.K_LEFT]:
+            ps.move_player_ship("left")
 
     if not start:
         start_screen.blit(bg_start, (0, 0))
@@ -69,4 +83,5 @@ while run:
         start_screen.blit(start_button, (230, 400))
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
+        start_screen.blit(ps.image, ps.rect)
     pygame.display.update()
