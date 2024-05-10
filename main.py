@@ -1,6 +1,8 @@
 import pygame
 import random
 from playerspaceship import PlayerSpaceShip
+from playerbullets import PlayerBullets
+from enemyspaceship1 import EnemySpaceShip1
 
 # set up pygame modules
 pygame.init()
@@ -24,6 +26,7 @@ start_button = pygame.image.load("button.png")
 start_button = pygame.transform.scale(start_button, (200, 100))
 
 ps = PlayerSpaceShip(300, 150)
+pb = PlayerBullets(300, 150)
 
 background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
 pygame.mixer.music.play(-1)
@@ -40,6 +43,11 @@ start = False
 
 INITIAL_BG_LVL1_Y = random.randint(0,500)
 bg_lvl1_y = INITIAL_BG_LVL1_Y
+
+
+# enemy spaceships
+es1 = EnemySpaceShip1(400, 150)
+
 
 
 # render the text for later
@@ -81,6 +89,9 @@ while run:
     if keys_player[pygame.K_LEFT]:
         ps.move_player_ship("left")
 
+    # shoot bullets
+
+
     if not start:
         start_screen.blit(bg_start, (0, 0))
         start_screen.blit(display_title, (250, 50))
@@ -92,4 +103,7 @@ while run:
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
         start_screen.blit(ps.image, ps.rect)
+        start_screen.blit(es1.image, es1.rect)
+        if keys_player[pygame.K_SPACE]:
+            start_screen.blit(pb.image, pb.rect)
     pygame.display.update()
