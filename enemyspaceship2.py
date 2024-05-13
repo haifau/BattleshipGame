@@ -1,12 +1,12 @@
 import pygame
 import random
 
-class EnemySpaceShip1:
+class EnemySpaceShip2:
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.image = pygame.image.load("enemy_spaceship_1.png")
+        self.image = pygame.image.load("enemy_spaceship2.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
 

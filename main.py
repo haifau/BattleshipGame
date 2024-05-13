@@ -3,6 +3,7 @@ import random
 from playerspaceship import PlayerSpaceShip
 from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
+from enemyspaceship2 import EnemySpaceShip2
 
 # set up pygame modules
 pygame.init()
@@ -13,6 +14,8 @@ pygame.display.set_caption("Space Attack!")
 
 # set up variables for the display
 start_size = (1000, 500)
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 500
 start_screen = pygame.display.set_mode(start_size)
 
 bg_start = pygame.image.load("starter-spacebackground.jpg")
@@ -25,8 +28,8 @@ bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 start_button = pygame.image.load("button.png")
 start_button = pygame.transform.scale(start_button, (200, 100))
 
-ps = PlayerSpaceShip(300, 150)
-pb = PlayerBullets(300, 150)
+ps = PlayerSpaceShip(300, 400)
+pb = PlayerBullets(ps.x + 10, ps.y + 10)
 
 background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
 pygame.mixer.music.play(-1)
@@ -46,9 +49,13 @@ bg_lvl1_y = INITIAL_BG_LVL1_Y
 
 
 # enemy spaceships
-es1 = EnemySpaceShip1(400, 150)
+es1 = EnemySpaceShip1(400,  50)
+es1_speed = 1
+es1_flying = False
 
-
+es2 = EnemySpaceShip2(700,  50)
+es2_speed = 1
+es2_flying = False
 
 # render the text for later
 display_title = title_font.render(title, True, (255, 255, 255))
@@ -90,6 +97,31 @@ while run:
         ps.move_player_ship("left")
 
     # shoot bullets
+    if keys_player[pygame.K_SPACE]:
+        pb.shoot_playerbullets("up")
+
+    # enemy spaceships
+    if start:
+         es1_flying = True
+         es2_flying = True
+         if es1_flying:
+             es1.y += es1_speed
+             es1.rect.y = es1.y
+             if es1.rect.y > ps.rect.y:
+                es1.y = es1.rect.y
+                es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+             elif es1.rect.y > SCREEN_HEIGHT:
+                es1.y = es1.rect.y
+                es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+         if es2_flying:
+             es2.y += es2_speed
+             es2.rect.y = es2.y
+             if es2.rect.y > ps.rect.y:
+                 es2.y = es2.rect.y
+                 es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+             elif es2.rect.y > SCREEN_HEIGHT:
+                 es2.y = es2.rect.y
+                 es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
     if not start:
@@ -104,6 +136,7 @@ while run:
         start_screen.blit(bg_lvl1, (0, 0))
         start_screen.blit(ps.image, ps.rect)
         start_screen.blit(es1.image, es1.rect)
+        start_screen.blit(es2.image, es2.rect)
         if keys_player[pygame.K_SPACE]:
             start_screen.blit(pb.image, pb.rect)
     pygame.display.update()

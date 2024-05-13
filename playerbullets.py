@@ -8,16 +8,12 @@ class PlayerBullets:
         self.image = pygame.image.load("player_bullets.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
-        self.delta = 5
+        self.delta = 3
         self.current_direction = "up"
 
-    def move_player_bullets(self, direction):
-        if direction == "right":
-            self.x = self.x + self.delta
-        if direction == "left":
-            self.x = self.x - self.delta
-        if direction == "down":
-            self.y = self.y + self.delta
+    def shoot_playerbullets(self, direction):
         if direction == "up":
             self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
+
+    # write a piece of code that would make the bullets follow the spaceship
