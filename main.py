@@ -50,11 +50,11 @@ bg_lvl1_y = INITIAL_BG_LVL1_Y
 
 # enemy spaceships
 es1 = EnemySpaceShip1(400,  50)
-es1_speed = 1
+es1_speed = 2
 es1_flying = False
 
 es2 = EnemySpaceShip2(700,  50)
-es2_speed = 1
+es2_speed = 2
 es2_flying = False
 
 # render the text for later
@@ -96,7 +96,7 @@ while run:
     if keys_player[pygame.K_LEFT]:
         ps.move_player_ship("left")
 
-    # shoot bullets
+    # shooting player bullets
     if keys_player[pygame.K_SPACE]:
         pb.shoot_playerbullets("up")
 
@@ -122,6 +122,11 @@ while run:
              elif es2.rect.y > SCREEN_HEIGHT:
                  es2.y = es2.rect.y
                  es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # shooting enemy bullets
+    # the enemy bullets should start in the same position as the enemy spaceships
+
+    # if player_bullets and enemy spacespace ships collide, then blit the explosion in the same position as the enemy spaceship
 
 
     if not start:
