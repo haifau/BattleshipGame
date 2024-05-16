@@ -4,6 +4,9 @@ from playerspaceship import PlayerSpaceShip
 from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
 from enemyspaceship2 import EnemySpaceShip2
+from button import Button
+from enemybullets import EnemyBullets
+from enemyspaceship3 import EnemySpaceShip3
 
 # set up pygame modules
 pygame.init()
@@ -25,11 +28,12 @@ bg_lvl1 = pygame.image.load("lvl1-background.jpg")
 bg_start = pygame.transform.scale(bg_start, (1000, 500))
 bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 
-start_button = pygame.image.load("button.png")
-start_button = pygame.transform.scale(start_button, (200, 100))
 
-ps = PlayerSpaceShip(300, 400)
+
+ps = PlayerSpaceShip(400, 400)
 pb = PlayerBullets(ps.x + 10, ps.y + 10)
+
+sb = Button(400, 400)
 
 background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
 pygame.mixer.music.play(-1)
@@ -43,9 +47,12 @@ instruction2 = "Keys: use spacebar to launch bullets and the arrow keys to move.
 
 # variables:
 start = False
+enemy_hit = False
 
 INITIAL_BG_LVL1_Y = random.randint(0,500)
 bg_lvl1_y = INITIAL_BG_LVL1_Y
+
+
 
 
 # enemy spaceships
@@ -56,6 +63,12 @@ es1_flying = False
 es2 = EnemySpaceShip2(700,  50)
 es2_speed = 2
 es2_flying = False
+
+es3 = EnemySpaceShip3(200, 50)
+es3_speed = 2
+es3_flying = False
+
+
 
 # render the text for later
 display_title = title_font.render(title, True, (255, 255, 255))
@@ -79,9 +92,10 @@ while run:
 
     for event in pygame.event.get():  # User did something
         if event.type == pygame.MOUSEBUTTONUP:
-            start = True
-            size = (1000, 500)
-            start_screen = pygame.display.set_mode(size)
+            if sb.rect.collidepoint(event.pos):
+                start = True
+                size = (1000, 500)
+                start_screen = pygame.display.set_mode(size)
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
@@ -107,7 +121,7 @@ while run:
          if es1_flying:
              es1.y += es1_speed
              es1.rect.y = es1.y
-             if es1.rect.y > ps.rect.y:
+             if es1.rect.y > SCREEN_HEIGHT:
                 es1.y = es1.rect.y
                 es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
              elif es1.rect.y > SCREEN_HEIGHT:
@@ -116,17 +130,31 @@ while run:
          if es2_flying:
              es2.y += es2_speed
              es2.rect.y = es2.y
-             if es2.rect.y > ps.rect.y:
+             if es2.rect.y > SCREEN_HEIGHT:
                  es2.y = es2.rect.y
                  es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
              elif es2.rect.y > SCREEN_HEIGHT:
                  es2.y = es2.rect.y
                  es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+         if es3_flying:
+             es3.y += es3_speed
+             es3.rect.y = es3.y
+             if es3.rect.y > SCREEN_HEIGHT:
+                 es3.y = es3.rect.y
+                 es3.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+             elif es3.rect.y > SCREEN_HEIGHT:
+                 es3.y = es3.rect.y
+                 es3.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # shooting enemy bullets
     # the enemy bullets should start in the same position as the enemy spaceships
 
     # if player_bullets and enemy spacespace ships collide, then blit the explosion in the same position as the enemy spaceship
+    # if es1.rect.colliderect(pb.rect):
+    #     enemy_hit = True
+    #     if enemy_hit:
+
+
 
 
     if not start:
@@ -136,12 +164,13 @@ while run:
         start_screen.blit(display_message2, (230, 160))
         start_screen.blit(display_instruction1, (230, 220))
         start_screen.blit(display_instruction2, (230, 260))
-        start_screen.blit(start_button, (230, 400))
+        start_screen.blit(sb.image, sb.rect)
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
         start_screen.blit(ps.image, ps.rect)
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
+        start_screen.blit(es3.image, es3.rect)
         if keys_player[pygame.K_SPACE]:
             start_screen.blit(pb.image, pb.rect)
     pygame.display.update()

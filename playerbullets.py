@@ -17,9 +17,9 @@ class PlayerBullets:
             self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
 
-    def reset_bullets(self, SCREEN_WIDTH, screen_height):
-        self.x = SCREEN_WIDTH - self.image.get_width()
-        self.y = 0
+    def reset_bullets(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+        self.x = 0
+        self.y = SCREEN_HEIGHT - self.image.get_height()
         self.rect.x = self.x
         self.rect.y = self.y
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
