@@ -21,9 +21,9 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 500
 start_screen = pygame.display.set_mode(start_size)
 
-bg_start = pygame.image.load("starter-spacebackground.jpg")
+bg_start = pygame.image.load("backgrounds/starter-spacebackground.jpg")
 
-bg_lvl1 = pygame.image.load("lvl1-background.jpg")
+bg_lvl1 = pygame.image.load("backgrounds/lvl1-background.png")
 
 bg_start = pygame.transform.scale(bg_start, (1000, 500))
 bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
@@ -113,11 +113,18 @@ while run:
     # shooting player bullets
     if keys_player[pygame.K_SPACE]:
         pb.shoot_playerbullets("up")
+    if not keys_player[pygame.K_SPACE]:
+        if pb.rect.y < SCREEN_HEIGHT:
+            pb.rect.y = ps.rect.y
+            pb.y = ps.rect.y
+            pb.reset_bullets(SCREEN_WIDTH, SCREEN_HEIGHT)
+
 
     # enemy spaceships
     if start:
          es1_flying = True
          es2_flying = True
+         es3_flying = True
          if es1_flying:
              es1.y += es1_speed
              es1.rect.y = es1.y

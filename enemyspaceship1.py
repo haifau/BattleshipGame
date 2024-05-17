@@ -6,7 +6,7 @@ class EnemySpaceShip1:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.image = pygame.image.load("enemy_spaceship_1.png")
+        self.image = pygame.image.load("images/enemy_spaceship_1.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
 
