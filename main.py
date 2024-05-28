@@ -52,6 +52,11 @@ enemy_hit = False
 INITIAL_BG_LVL1_Y = random.randint(0,500)
 bg_lvl1_y = INITIAL_BG_LVL1_Y
 
+player_health = 100
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+RED = (255,0,0)
+GREEN = (0,255,0)
 
 
 
@@ -96,6 +101,8 @@ while run:
                 start = True
                 size = (1000, 500)
                 start_screen = pygame.display.set_mode(size)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            player_health -= 5
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
@@ -178,6 +185,8 @@ while run:
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
         start_screen.blit(es3.image, es3.rect)
+        pygame.draw.rect(start_screen, RED, (200, 400, 100, 5))
+        pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
         if keys_player[pygame.K_SPACE]:
             start_screen.blit(pb.image, pb.rect)
     pygame.display.update()
