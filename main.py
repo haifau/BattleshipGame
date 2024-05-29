@@ -1,12 +1,14 @@
 import pygame
 import random
-from playerspaceship import PlayerSpaceShip
-from playerbullets import PlayerBullets
+# from playerspaceship import PlayerSpaceShip
+# from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
 from enemyspaceship2 import EnemySpaceShip2
 from button import Button
 from enemybullets import EnemyBullets
 from enemyspaceship3 import EnemySpaceShip3
+from playerspaceshipnew import PlayerSpaceShipNew
+from playerbulletsnew import PlayerBulletsNew
 
 # set up pygame modules
 pygame.init()
@@ -29,14 +31,18 @@ bg_start = pygame.transform.scale(bg_start, (1000, 500))
 bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 
 
-
-ps = PlayerSpaceShip(400, 400)
-pb = PlayerBullets(ps.x + 10, ps.y + 10)
+#
+# ps = PlayerSpaceShip(400, 400)
+# pb = PlayerBullets(ps.x + 10, ps.y + 10)
 
 sb = Button(400, 400)
 
 background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
 pygame.mixer.music.play(-1)
+
+# sprite groups
+player_spaceship_group = pygame.sprite.Group()
+player_bullets_group = pygame.sprite.Group()
 
 # text on screen
 title = "SPACE ATTACK"
@@ -82,6 +88,8 @@ display_message2 = text_font.render(message2, True, (255, 255, 255))
 display_instruction1 = text_font.render(instruction1, True, (255, 255, 255))
 display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
+
+
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
 clock = pygame.time.Clock()
@@ -106,25 +114,38 @@ while run:
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
-    # movement for player spaceship
-    keys_player = pygame.key.get_pressed()  # checking pressed keys
-    if keys_player[pygame.K_UP]:
-        ps.move_player_ship("up")
-    if keys_player[pygame.K_DOWN]:
-        ps.move_player_ship("down")
-    if keys_player[pygame.K_RIGHT]:
-        ps.move_player_ship("right")
-    if keys_player[pygame.K_LEFT]:
-        ps.move_player_ship("left")
+    # # movement for player spaceship
+    # keys_player = pygame.key.get_pressed()  # checking pressed keys
+    # if keys_player[pygame.K_UP]:
+    #     ps.move_player_ship("up")
+    # if keys_player[pygame.K_DOWN]:
+    #     ps.move_player_ship("down")
+    # if keys_player[pygame.K_RIGHT]:
+    #     ps.move_player_ship("right")
+    # if keys_player[pygame.K_LEFT]:
+    #     ps.move_player_ship("left")
 
-    # shooting player bullets
-    if keys_player[pygame.K_SPACE]:
-        pb.shoot_playerbullets("up")
-    if not keys_player[pygame.K_SPACE]:
-        if pb.rect.y < SCREEN_HEIGHT:
-            pb.rect.y = ps.rect.y
-            pb.y = ps.rect.y
-            pb.reset_bullets(SCREEN_WIDTH, SCREEN_HEIGHT)
+    # # shooting player bullets
+    # if keys_player[pygame.K_SPACE]:
+    #     pb.shoot_playerbullets("up")
+    # if not keys_player[pygame.K_SPACE]:
+    #     if pb.rect.y < SCREEN_HEIGHT:
+    #         pb.rect.y = ps.rect.y
+    #         pb.y = ps.rect.y
+    #         pb.reset_bullets(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # create player
+    #playerspaceship_new = PlayerSpaceShipNew(int(SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100)
+    #player_spaceship_group.add(playerspaceship_new)
+
+    # update sprite groups
+    player_spaceship_group.update()
+    player_bullets_group.update()
+
+    # draw sprite group
+    player_spaceship_group.draw(start_screen)
+    player_bullets_group.draw(start_screen)
+
 
 
     # enemy spaceships
@@ -181,12 +202,12 @@ while run:
         start_screen.blit(sb.image, sb.rect)
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
-        start_screen.blit(ps.image, ps.rect)
+        # start_screen.blit(ps.image, ps.rect)
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
         start_screen.blit(es3.image, es3.rect)
         pygame.draw.rect(start_screen, RED, (200, 400, 100, 5))
         pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
-        if keys_player[pygame.K_SPACE]:
-            start_screen.blit(pb.image, pb.rect)
+        # if keys_player[pygame.K_SPACE]:
+        #     start_screen.blit(pb.image, pb.rect)
     pygame.display.update()
