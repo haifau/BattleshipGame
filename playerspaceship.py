@@ -16,8 +16,4 @@ class PlayerSpaceShip:
             self.x = self.x + self.delta
         if direction == "left":
             self.x = self.x - self.delta
-        if direction == "down":
-            self.y = self.y + self.delta
-        if direction == "up":
-            self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
