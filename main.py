@@ -1,7 +1,7 @@
 import pygame
 import random
 from playerspaceship import PlayerSpaceShip
-from playerbullets import PlayerBullets
+#from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
 from enemyspaceship2 import EnemySpaceShip2
 from button import Button
@@ -31,9 +31,19 @@ bg_start = pygame.transform.scale(bg_start, (1000, 500))
 bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 
 
-#
+# player
 ps = PlayerSpaceShip(400, 400)
-pb = PlayerBullets(ps.x + 10, ps.y + 10)
+#pb = PlayerBullets(ps.x + 10, ps.y + 10)
+
+
+# player bullets
+player_bullet = pygame.image.load("player_bullet.png")
+player_bullet = pygame.transform.scale(player_bullet, (50, 50))
+player_bulletX = 0
+player_bulletY = 500
+player_bulletX_change = 0
+player_bulletY_change = 10
+player_bullet_fired = False
 
 sb = Button(400, 400)
 
@@ -89,7 +99,10 @@ display_message2 = text_font.render(message2, True, (255, 255, 255))
 display_instruction1 = text_font.render(instruction1, True, (255, 255, 255))
 display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
-
+# bullet function
+def fire_bullet(x, y):
+    player_bullet_fired == True
+    start_screen.blit(player_bullet,(x + 16,  y + 10))
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -110,6 +123,10 @@ while run:
                 start = True
                 size = (1000, 500)
                 start_screen = pygame.display.set_mode(size)
+            # shooting player bullets
+            if event.type == pygame.K_SPACE:
+                fire_bullet(ps.x, player_bulletY)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             player_health -= 5
         if event.type == pygame.QUIT:  # If user clicked close
@@ -122,26 +139,20 @@ while run:
     if keys_player[pygame.K_LEFT]:
         ps.move_player_ship("left")
 
-    # shooting player bullets
-    if keys_player[pygame.K_SPACE]:
-        pb.shoot_playerbullets("up")
-    if not keys_player[pygame.K_SPACE]:
-        if pb.rect.y < SCREEN_HEIGHT:
-         pb.rect.y = ps.rect.y
-         pb.y = ps.rect.y
-         pb.reset_bullets(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # create player
     #playerspaceship_new = PlayerSpaceShipNew(int(SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100)
     #player_spaceship_group.add(playerspaceship_new)
 
-    # update sprite groups
-    player_spaceship_group.update()
-    player_bullets_group.update()
+    # # update sprite groups
+    # player_spaceship_group.update()
+    # player_bullets_group.update()
+    #
+    # # draw sprite group
+    # player_spaceship_group.draw(start_screen)
+    # player_bullets_group.draw(start_screen)
 
-    # draw sprite group
-    player_spaceship_group.draw(start_screen)
-    player_bullets_group.draw(start_screen)
+    #
 
 
 
@@ -205,6 +216,7 @@ while run:
         start_screen.blit(es3.image, es3.rect)
         # pygame.draw.rect(start_screen, RED, (200, 400, 100, 5))
         # pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
-        if keys_player[pygame.K_SPACE]:
-            start_screen.blit(pb.image, pb.rect)
+        # if keys_player[pygame.K_SPACE]:
+        #     start_screen.blit(pb.image, pb.rect)
+
     pygame.display.update()
