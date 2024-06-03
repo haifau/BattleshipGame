@@ -40,10 +40,10 @@ ps = PlayerSpaceShip(400, 400)
 player_bullet = pygame.image.load("player_bullet.png")
 player_bullet = pygame.transform.scale(player_bullet, (50, 50))
 player_bulletX = 0
-player_bulletY = 500
+player_bulletY = 480
 player_bulletX_change = 0
-player_bulletY_change = 10
-player_bullet_fired = False
+player_bulletY_change = 8
+player_bullet_state = "ready"
 
 sb = Button(400, 400)
 
@@ -101,8 +101,9 @@ display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
 # bullet function
 def fire_bullet(x, y):
-    player_bullet_fired == True
-    start_screen.blit(player_bullet,(x + 16,  y + 10))
+    global player_bullet_state
+    player_bullet_state = "fire"
+    start_screen.blit(player_bullet,(x + 16, y + 30))
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -123,9 +124,11 @@ while run:
                 start = True
                 size = (1000, 500)
                 start_screen = pygame.display.set_mode(size)
-            # shooting player bullets
-            if event.type == pygame.K_SPACE:
-                fire_bullet(ps.x, player_bulletY)
+        # shooting player bullets
+        key = pygame.key.get_pressed()
+        if key[pygame.K_SPACE]:
+            player_bulletX = ps.x
+            fire_bullet(ps.x, player_bulletY)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             player_health -= 5
@@ -152,8 +155,7 @@ while run:
     # player_spaceship_group.draw(start_screen)
     # player_bullets_group.draw(start_screen)
 
-    #
-
+    # bullet movement
 
 
     # enemy spaceships
@@ -218,5 +220,11 @@ while run:
         # pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
         # if keys_player[pygame.K_SPACE]:
         #     start_screen.blit(pb.image, pb.rect)
+        if player_bulletY <= 0:
+            player_bulletY = 480
+            player_bullet_state = "ready"
+        if player_bullet_state == "fire":
+            fire_bullet(player_bulletX, player_bulletY)
+            player_bulletY -= player_bulletY_change
 
     pygame.display.update()
