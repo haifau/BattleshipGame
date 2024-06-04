@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 from playerspaceship import PlayerSpaceShip
 #from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
@@ -38,7 +39,7 @@ ps = PlayerSpaceShip(400, 400)
 
 # player bullets
 player_bullet = pygame.image.load("player_bullet.png")
-player_bullet = pygame.transform.scale(player_bullet, (50, 50))
+player_bullet = pygame.transform.scale(player_bullet, (30, 40))
 player_bulletX = 0
 player_bulletY = 480
 player_bulletX_change = 0
@@ -105,6 +106,9 @@ def fire_bullet(x, y):
     player_bullet_state = "fire"
     start_screen.blit(player_bullet,(x + 16, y + 30))
 
+# player_bullet-enemy spaceships collision function:
+def collision_w_es1(es1.x, )
+
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
 clock = pygame.time.Clock()
@@ -143,21 +147,6 @@ while run:
         ps.move_player_ship("left")
 
 
-    # create player
-    #playerspaceship_new = PlayerSpaceShipNew(int(SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100)
-    #player_spaceship_group.add(playerspaceship_new)
-
-    # # update sprite groups
-    # player_spaceship_group.update()
-    # player_bullets_group.update()
-    #
-    # # draw sprite group
-    # player_spaceship_group.draw(start_screen)
-    # player_bullets_group.draw(start_screen)
-
-    # bullet movement
-
-
     # enemy spaceships
     if start:
          es1_flying = True
@@ -190,15 +179,6 @@ while run:
              elif es3.rect.y > SCREEN_HEIGHT:
                  es3.y = es3.rect.y
                  es3.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-    # shooting enemy bullets
-    # the enemy bullets should start in the same position as the enemy spaceships
-
-    # if player_bullets and enemy spacespace ships collide, then blit the explosion in the same position as the enemy spaceship
-    # if es1.rect.colliderect(pb.rect):
-    #     enemy_hit = True
-    #     if enemy_hit:
-
 
     if not start:
         start_screen.blit(bg_start, (0, 0))
