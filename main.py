@@ -107,7 +107,7 @@ def fire_bullet(x, y):
     start_screen.blit(player_bullet,(x + 16, y + 30))
 
 # player_bullet-enemy spaceships collision function:
-def collision_w_es1(es1.x, )
+#def collision_w_es1(self.x, )
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
