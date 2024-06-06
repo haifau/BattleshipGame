@@ -1,6 +1,6 @@
 import pygame
 import random
-import time
+import math
 from playerspaceship import PlayerSpaceShip
 #from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
@@ -8,8 +8,7 @@ from enemyspaceship2 import EnemySpaceShip2
 from button import Button
 from enemybullets import EnemyBullets
 from enemyspaceship3 import EnemySpaceShip3
-# from playerspaceshipnew import PlayerSpaceShipNew
-# from playerbulletsnew import PlayerBulletsNew
+
 
 # set up pygame modules
 pygame.init()
@@ -31,24 +30,25 @@ bg_lvl1 = pygame.image.load("lvl1-background.jpg")
 bg_start = pygame.transform.scale(bg_start, (1000, 500))
 bg_lvl1 = pygame.transform.scale(bg_lvl1, (1000, 500))
 
+# explosion
+explosion = pygame.image.load("explosion.png")
+explosion = pygame.transform.scale(explosion,(100, 100))
 
 # player
 ps = PlayerSpaceShip(400, 400)
-#pb = PlayerBullets(ps.x + 10, ps.y + 10)
-
 
 # player bullets
-player_bullet = pygame.image.load("player_bullet.png")
-player_bullet = pygame.transform.scale(player_bullet, (30, 40))
-player_bulletX = 0
-player_bulletY = 480
-player_bulletX_change = 0
-player_bulletY_change = 8
-player_bullet_state = "ready"
+pb = pygame.image.load("player_bullet.png")
+pb = pygame.transform.scale(pb, (30, 40))
+pb_x = 0
+pb_y = 480
+pb_x_change = 0
+pb_y_change = 8
+pb_state = "ready"
 
 sb = Button(400, 400)
 
-background_sound = pygame.mixer.music.load('space_signal_sound.mp3')
+background_sound = pygame.mixer.music.load('space_battle_sound.mp3')
 pygame.mixer.music.play(-1)
 
 # sprite groups
@@ -80,15 +80,15 @@ GREEN = (0,255,0)
 
 # enemy spaceships
 es1 = EnemySpaceShip1(400,  50)
-es1_speed = 2
+es1_speed = 1
 es1_flying = False
 
 es2 = EnemySpaceShip2(700,  50)
-es2_speed = 2
+es2_speed = 1
 es2_flying = False
 
 es3 = EnemySpaceShip3(200, 50)
-es3_speed = 2
+es3_speed = 1
 es3_flying = False
 
 
@@ -102,12 +102,31 @@ display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
 # bullet function
 def fire_bullet(x, y):
-    global player_bullet_state
-    player_bullet_state = "fire"
-    start_screen.blit(player_bullet,(x + 16, y + 30))
+    global pb_state
+    pb_state = "fire"
+    start_screen.blit(pb,(x + 16, y + 30))
 
-# player_bullet-enemy spaceships collision function:
-#def collision_w_es1(self.x, )
+# collision function
+def collide_w_es1(es1_x, es1_y, pb_x, pb_y):
+    distance = math.sqrt((math.pow(es1_x - pb_x, 2)) + (math.pow(es1_y - pb_y, 2)))
+    if distance < 25:
+        return True
+    else:
+        return False
+
+def collide_w_es2(es2_x, es2_y, pb_x, pb_y):
+    distance = math.sqrt((math.pow(es2_x - pb_x, 2)) + (math.pow(es2_y - pb_y, 2)))
+    if distance < 25:
+        return True
+    else:
+        return False
+
+def collide_w_es3(es3_x, es3_y, pb_x, pb_y):
+    distance = math.sqrt((math.pow(es3_x - pb_x, 2)) + (math.pow(es3_y - pb_y, 2)))
+    if distance < 60:
+        return True
+    else:
+        return False
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -131,8 +150,8 @@ while run:
         # shooting player bullets
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:
-            player_bulletX = ps.x
-            fire_bullet(ps.x, player_bulletY)
+            pb_x = ps.x
+            fire_bullet(ps.x, pb_y)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             player_health -= 5
@@ -158,27 +177,25 @@ while run:
              if es1.rect.y > SCREEN_HEIGHT:
                 es1.y = es1.rect.y
                 es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
-             elif es1.rect.y > SCREEN_HEIGHT:
-                es1.y = es1.rect.y
-                es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+         es1_x = es1.x
+         es1_y = es1.y
          if es2_flying:
              es2.y += es2_speed
              es2.rect.y = es2.y
              if es2.rect.y > SCREEN_HEIGHT:
                  es2.y = es2.rect.y
                  es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
-             elif es2.rect.y > SCREEN_HEIGHT:
-                 es2.y = es2.rect.y
-                 es2.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+             es2_x = es2.x
+             es2_y = es2.y
          if es3_flying:
              es3.y += es3_speed
              es3.rect.y = es3.y
              if es3.rect.y > SCREEN_HEIGHT:
                  es3.y = es3.rect.y
                  es3.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
-             elif es3.rect.y > SCREEN_HEIGHT:
-                 es3.y = es3.rect.y
-                 es3.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
+             es3_x = es3.x
+             es3_y = es3.y
+
 
     if not start:
         start_screen.blit(bg_start, (0, 0))
@@ -191,20 +208,32 @@ while run:
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
         start_screen.blit(ps.image, ps.rect)
-        # player_spaceship_group.draw(start_screen)
-        # player_spaceship_group.update()
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
         start_screen.blit(es3.image, es3.rect)
         # pygame.draw.rect(start_screen, RED, (200, 400, 100, 5))
         # pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
-        # if keys_player[pygame.K_SPACE]:
-        #     start_screen.blit(pb.image, pb.rect)
-        if player_bulletY <= 0:
-            player_bulletY = 480
-            player_bullet_state = "ready"
-        if player_bullet_state == "fire":
-            fire_bullet(player_bulletX, player_bulletY)
-            player_bulletY -= player_bulletY_change
+        if pb_y <= 0:
+            pb_y = 480
+            pb_state = "ready"
+        if pb_state == "fire":
+            fire_bullet(pb_x, pb_y)
+            pb_y -= pb_y_change
+        collision_w_es1 = collide_w_es1(es1_x, es1_y, pb_x, pb_y)
+        if collision_w_es1:
+            pb_y = 480
+            pb_state = "ready"
+            start_screen.blit(explosion, (es1_x, es1_y))
+        collision_w_es2 = collide_w_es2(es2_x, es2_y, pb_x, pb_y)
+        if collision_w_es2:
+            pb_y = 480
+            pb_state = "ready"
+            start_screen.blit(explosion, (es2_x, es2_y))
+        collision_w_es3 = collide_w_es3(es3_x, es3_y, pb_x, pb_y)
+        if collision_w_es3:
+            pb_y = 480
+            pb_state = "ready"
+            start_screen.blit(explosion, (es3_x, es3_y))
+
 
     pygame.display.update()

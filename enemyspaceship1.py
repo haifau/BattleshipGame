@@ -10,7 +10,7 @@ class EnemySpaceShip1:
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
 
-    def reset_position(self, SCREEN_WIDTH, screen_height):
+    def reset_position(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         self.x = random.randint(0, SCREEN_WIDTH - self.image.get_width())
         self.y = 0
         self.rect.x = self.x
