@@ -9,10 +9,16 @@ class EnemySpaceShip2:
         self.image = pygame.image.load("enemy_spaceship2.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
+        self.delta = 8
+        self.current_direction = "down"
 
-    def reset_position(self, SCREEN_WIDTH, screen_height):
-        self.x = random.randint(0, SCREEN_WIDTH - self.image.get_width())
-        self.y = 0
-        self.rect.x = self.x
-        self.rect.y = self.y
+    def move_enemy2_ship(self, direction):
+        if direction == "right":
+            self.x = self.x + self.delta
+        if direction == "left":
+            self.x = self.x - self.delta
+        if direction == "down":
+            self.y = self.y + self.delta
+        if direction == "up":
+            self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
