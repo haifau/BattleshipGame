@@ -85,6 +85,7 @@ instruction2 = "Keys: use spacebar to launch bullets and the left/right keys to 
 # variables:
 start = False
 enemy_hit = False
+launch_eb1 = False
 
 INITIAL_BG_LVL1_Y = random.randint(0,500)
 bg_lvl1_y = INITIAL_BG_LVL1_Y
@@ -117,7 +118,8 @@ def fire_bullet(x, y):
 def fire_enemy1_bullet(x, y):
     global eb1_state
     eb1_state = "fire"
-    start_screen.blit(eb1, (x + 16, y + 30))
+    print('firing enemy bullet')
+    start_screen.blit(eb1, (x + 20, y + 30))
 
 # collision for player bullets and enemy spaceships function
 def collide_w_es1(es1_x, es1_y, pb_x, pb_y):
@@ -229,6 +231,14 @@ while run:
         start_screen.blit(sb.image, sb.rect)
     if start:
         start_screen.blit(bg_lvl1, (0, 0))
+        launch_eb1 = True
+        if launch_eb1:
+            if eb1_y <= 0:
+                eb1_y = 50
+                eb1_state = "ready"
+            if eb1_state == "fire":
+                fire_enemy1_bullet(eb1_x, eb1_y)
+                eb1_y += eb1_y_change
         start_screen.blit(ps.image, ps.rect)
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
@@ -241,12 +251,6 @@ while run:
         if pb_state == "fire":
             fire_bullet(pb_x, pb_y)
             pb_y -= pb_y_change
-        if eb1_y <= 0:
-            eb1_y = 50
-            eb1_state = "ready"
-        if eb1_state == "fire":
-            fire_enemy1_bullet(eb1_x, eb1_y)
-            eb1_y += eb1_y_change
 
         collision_w_es1 = collide_w_es1(es1_x, es1_y, pb_x, pb_y)
 
@@ -255,7 +259,6 @@ while run:
             pb_state = "ready"
             es1.update()
             start_screen.blit(explosion, (es1_x, es1_y))
-            #player_health -= 5
 
         collision_w_es2 = collide_w_es2(es2_x, es2_y, pb_x, pb_y)
 
