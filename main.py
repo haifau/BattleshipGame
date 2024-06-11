@@ -2,11 +2,9 @@ import pygame
 import random
 import math
 from playerspaceship import PlayerSpaceShip
-#from playerbullets import PlayerBullets
 from enemyspaceship1 import EnemySpaceShip1
 from enemyspaceship2 import EnemySpaceShip2
 from button import Button
-from enemybullets import EnemyBullets
 from enemyspaceship3 import EnemySpaceShip3
 
 
@@ -37,6 +35,19 @@ explosion = pygame.transform.scale(explosion,(100, 100))
 # player
 ps = PlayerSpaceShip(400, 400)
 
+# enemy spaceships
+es1 = EnemySpaceShip1(400,  50)
+es1_speed = 1
+es1_flying = False
+
+es2 = EnemySpaceShip2(700,  50)
+es2_speed = 1
+es2_flying = False
+
+es3 = EnemySpaceShip3(200, 50)
+es3_speed = 1
+es3_flying = False
+
 # player bullets
 pb = pygame.image.load("player_bullet.png")
 pb = pygame.transform.scale(pb, (30, 40))
@@ -45,6 +56,15 @@ pb_y = 480
 pb_x_change = 0
 pb_y_change = 8
 pb_state = "ready"
+
+# enemy1 bullets
+eb1 = pygame.image.load("enemy_1_bullet.png")
+eb1 = pygame.transform.scale(eb1, (30, 50))
+eb1_x = es1.x
+eb1_y = es1.y
+eb1_x_change = 0
+eb1_y_change = 5
+eb1_state = "ready"
 
 sb = Button(400, 400)
 
@@ -60,7 +80,7 @@ title = "SPACE ATTACK"
 message1 = "THIS IS SPACE CONTROL OVER. THE UNIVERSE NEEDS YOUR HELP."
 message2 = "ALIENS ARE ATTACKING THE MILKYWAY GALAXY."
 instruction1 = "Use your space battleship bullets to counter their attacks."
-instruction2 = "Keys: use spacebar to launch bullets and the arrow keys to move."
+instruction2 = "Keys: use spacebar to launch bullets and the left/right keys to move."
 
 # variables:
 start = False
@@ -78,19 +98,6 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 
 
-# enemy spaceships
-es1 = EnemySpaceShip1(400,  50)
-es1_speed = 1
-es1_flying = False
-
-es2 = EnemySpaceShip2(700,  50)
-es2_speed = 1
-es2_flying = False
-
-es3 = EnemySpaceShip3(200, 50)
-es3_speed = 1
-es3_flying = False
-
 
 
 # render the text for later
@@ -100,23 +107,29 @@ display_message2 = text_font.render(message2, True, (255, 255, 255))
 display_instruction1 = text_font.render(instruction1, True, (255, 255, 255))
 display_instruction2 = text_font.render(instruction2, True, (255, 255, 255))
 
-# bullet function
+# player_bullet function
 def fire_bullet(x, y):
     global pb_state
     pb_state = "fire"
     start_screen.blit(pb,(x + 16, y + 30))
 
-# collision function
+# enemy1_bullet function
+def fire_enemy1_bullet(x, y):
+    global eb1_state
+    eb1_state = "fire"
+    start_screen.blit(eb1, (x + 16, y + 30))
+
+# collision for player bullets and enemy spaceships function
 def collide_w_es1(es1_x, es1_y, pb_x, pb_y):
     distance = math.sqrt((math.pow(es1_x - pb_x, 2)) + (math.pow(es1_y - pb_y, 2)))
-    if distance < 25:
+    if distance < 60:
         return True
     else:
         return False
 
 def collide_w_es2(es2_x, es2_y, pb_x, pb_y):
     distance = math.sqrt((math.pow(es2_x - pb_x, 2)) + (math.pow(es2_y - pb_y, 2)))
-    if distance < 25:
+    if distance < 60:
         return True
     else:
         return False
@@ -127,6 +140,15 @@ def collide_w_es3(es3_x, es3_y, pb_x, pb_y):
         return True
     else:
         return False
+
+# collision for enemy bullets and player spaceship function
+def eb1_collide_w_ps(ps_x, ps_y, eb1_x, eb1_y):
+    distance = math.sqrt((math.pow(ps_x - eb1_x, 2)) + (math.pow(ps_y - eb1_y, 2)))
+    if distance < 60:
+        return True
+    else:
+        return False
+
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -153,8 +175,6 @@ while run:
             pb_x = ps.x
             fire_bullet(ps.x, pb_y)
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            player_health -= 5
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
@@ -174,6 +194,8 @@ while run:
          if es1_flying:
              es1.y += es1_speed
              es1.rect.y = es1.y
+             eb1_x = es1.x
+             fire_enemy1_bullet(es1.x, eb1_y)
              if es1.rect.y > SCREEN_HEIGHT:
                 es1.y = es1.rect.y
                 es1.reset_position(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -211,29 +233,53 @@ while run:
         start_screen.blit(es1.image, es1.rect)
         start_screen.blit(es2.image, es2.rect)
         start_screen.blit(es3.image, es3.rect)
-        # pygame.draw.rect(start_screen, RED, (200, 400, 100, 5))
-        # pygame.draw.rect(start_screen, GREEN, (200, 400, player_health, 5))
+        pygame.draw.rect(start_screen, RED, (ps.x, ps.y, 100, 5))
+        pygame.draw.rect(start_screen, GREEN, (ps.x, ps.y, player_health, 5))
         if pb_y <= 0:
             pb_y = 480
             pb_state = "ready"
         if pb_state == "fire":
             fire_bullet(pb_x, pb_y)
             pb_y -= pb_y_change
+        if eb1_y <= 0:
+            eb1_y = 50
+            eb1_state = "ready"
+        if eb1_state == "fire":
+            fire_enemy1_bullet(eb1_x, eb1_y)
+            eb1_y += eb1_y_change
+
         collision_w_es1 = collide_w_es1(es1_x, es1_y, pb_x, pb_y)
+
         if collision_w_es1:
             pb_y = 480
             pb_state = "ready"
+            es1.update()
             start_screen.blit(explosion, (es1_x, es1_y))
+            #player_health -= 5
+
         collision_w_es2 = collide_w_es2(es2_x, es2_y, pb_x, pb_y)
+
         if collision_w_es2:
             pb_y = 480
             pb_state = "ready"
             start_screen.blit(explosion, (es2_x, es2_y))
+
         collision_w_es3 = collide_w_es3(es3_x, es3_y, pb_x, pb_y)
+
         if collision_w_es3:
             pb_y = 480
             pb_state = "ready"
             start_screen.blit(explosion, (es3_x, es3_y))
+
+        ps_x = ps.x
+        ps_y = ps.y
+
+        eb1_collision_w_ps = eb1_collide_w_ps(ps_x, ps_y, eb1_x, eb1_y)
+
+        if eb1_collision_w_ps:
+            eb1_y = 50
+            pb_state = "ready"
+            player_health -= 5
 
 
     pygame.display.update()
